@@ -6,6 +6,7 @@ from   controller import Controller
 from   qualtrics  import Qualtrics
 from   model      import Model
 
+# this is a comment
 
 def main():
 	tk.Tk.report_callback_exception = show_error
