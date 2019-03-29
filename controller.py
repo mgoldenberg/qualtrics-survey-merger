@@ -148,6 +148,10 @@ class Controller:
 			title="Save as ...")
 		if not path:
 			return
+
+		usefilter = messagebox.askyesno("Filtering", "Do you want to filter responses?")
+		if usefilter is None:
+			usefilter = True
 		try:
 			defaults = self.get("defaults", "responses", "filter", "primary", default=[])
 			with open(path, 'w', newline='') as f:
@@ -159,12 +163,13 @@ class Controller:
 				labels = [self.get("defaults", "questions", "primary")] + [survey.name for survey in surveys]
 				writer.writerow(labels)
 				for primary in sorted(self.get("responses")):
-					# filter out unwanted primary question responses
-					result = self.find(defaults, primary, key=
-						lambda x:
-							x.upper().strip())
-					if result is not None:
-						continue
+					if usefilter:
+						# filter out unwanted primary question responses
+						result = self.find(defaults, primary, key=
+							lambda x:
+								x.upper().strip())
+						if result is not None:
+							continue
 
 					values = [primary]
 					for survey in surveys:
@@ -173,7 +178,7 @@ class Controller:
 						for x in secondary:
 							if len(x) > 1:
 								x = ", ".join(x)
-							result += x
+							result += str(x)
 							if x != secondary[-1]:
 								result += "\n"
 						values.append(result)
